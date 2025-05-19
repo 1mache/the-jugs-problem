@@ -7,6 +7,9 @@
 *.vcxproj.filters
 *.vcxproj.user
 
+premake/
+premake*
+
 # User-specific files
 *.rsuser
 *.suo
