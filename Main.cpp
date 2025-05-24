@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <chrono>
 #include "JugsManager.h"
 
 bool isValidInput(size_t L, size_t S, size_t W, size_t method)

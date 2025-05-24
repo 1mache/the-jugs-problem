@@ -12,28 +12,33 @@ void JugsManager::solveWithGraph()
 	std::cout << "Number of operations: " << path.size() << std::endl;
 	std::cout << "Operations:\n";
 
-	for(auto action : path)
+	size_t stepCount = 1;
+
+	for (auto action : path)
 	{
-		switch(action)
+		std::cout << stepCount << ". ";
+		stepCount++;
+
+		switch (action)
 		{
-			case Graph::Action::FillL:
-				std::cout << "Fill large jug\n";
-				break;
-			case Graph::Action::FillS:
-				std::cout << "Fill small jug\n";
-				break;
-			case Graph::Action::EmptyL:
-				std::cout << "Empty large jug\n";
-				break;
-			case Graph::Action::EmptyS:
-				std::cout << "Empty small jug\n";
-				break;
-			case Graph::Action::PourLtoS:
-				std::cout << "Transfer from large jug to small jug\n";
-				break;
-			case Graph::Action::PourStoL:
-				std::cout << "Transfer from small jug to large jug\n";
-				break;
+		case Graph::Action::FillL:
+			std::cout << "Fill large jug\n";
+			break;
+		case Graph::Action::FillS:
+			std::cout << "Fill small jug\n";
+			break;
+		case Graph::Action::EmptyL:
+			std::cout << "Empty large jug\n";
+			break;
+		case Graph::Action::EmptyS:
+			std::cout << "Empty small jug\n";
+			break;
+		case Graph::Action::PourLtoS:
+			std::cout << "Transfer from large jug to small jug\n";
+			break;
+		case Graph::Action::PourStoL:
+			std::cout << "Transfer from small jug to large jug\n";
+			break;
 		}
 	}
 }
