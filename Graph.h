@@ -19,8 +19,9 @@ public:
 		None
 	};
 
-	using Node = std::pair<size_t, size_t>; 
+	using Node = std::pair<size_t, size_t>;
 	using NeighborList = std::list<Node>;
+	using AdjList = std::vector<NeighborList>;
 
 public:
 	Graph(size_t L, size_t S) : m_L(L), m_S(S), m_NodesCount((L + 1)* (S + 1))
@@ -49,8 +50,6 @@ private:
 	// definintion of infinity for bfs
 	static constexpr size_t INF = SIZE_MAX;
 
-
-	using AdjList = std::vector<std::list<Node>>;
 	const size_t m_L, m_S;
 	const size_t m_NodesCount;
 

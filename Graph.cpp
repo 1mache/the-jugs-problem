@@ -2,15 +2,18 @@
 
 void Graph::MakeEmptyGraph(size_t n)
 {
-	m_adjList.reserve(n);
+	m_adjList.resize(n);
 	
-	for (size_t i = 0; i < m_L; ++i) {
-		for (size_t j = 0; j < m_S; ++j)
-		{
-			// add node (pair) into the adjacency list with empty neighbors list
-			m_adjList[nodeId({ i, j })] = NeighborList();
-		}
-	}
+	// resize does that for us
+
+	//for (size_t i = 0; i < m_L+1; ++i) {
+	//	for (size_t j = 0; j < m_S+1; ++j)
+	//	{
+	//		auto id = nodeId({ i,j });
+	//		// add node (pair) into the adjacency list with empty neighbors list
+	//		m_adjList[nodeId({ i, j })] = NeighborList();
+	//	}
+	//}
 }
 
 void Graph::BFS()
