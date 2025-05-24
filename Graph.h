@@ -54,6 +54,8 @@ public:
 		m_adjList[nodeId(u)].sort();
 	}
 
+	std::list<Action> GetPath(Node goal);
+
 private:
 	// Convert a node to a unique index in the adjacency list
 	size_t nodeId(Node u) const
