@@ -84,3 +84,28 @@ Graph::Action Graph::getAction(const Node& from, const Node& to)
 	// should never reach here if the graph is constructed correctly
 	return Action::None;
 }
+
+std::list<Graph::Action> Graph::GetPath(Node goal)
+{
+	std::list<Action> path;
+	Node current = goal;
+
+	while (current != startNode)
+	{
+		size_t cid = nodeId(current);
+		if (m_distances[cid] == static_cast<size_t>(-1)) 
+		{
+			return std::list<Action>(); // unreachable
+		}
+
+		std::pair<Node, Action> parentAction = m_parents[cid];
+		Node parent = parentAction.first;
+		Action action = parentAction.second;
+
+		path.push_front(action);
+		current = parent;
+	}
+
+	return path;
+}
+
