@@ -3,18 +3,20 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include "Node.h"
 
 class Graph
 {
+	using Node = std::pair<size_t, size_t>; 
 	using AdjacencyList = std::vector<std::list<Node>>;
 	AdjacencyList m_adjList;
 
+	const size_t c_maxFirst, c_maxSecond;
+
 public:
-	Graph(size_t nodeCount)
+	Graph(size_t L, size_t S) : c_maxFirst(L), c_maxSecond(S)
 	{
-		MakeEmptyGraph(nodeCount);
-	} 
+		MakeEmptyGraph((L+1) * (S+1));
+	}
 
 	Graph(Graph&) = delete;
 	Graph& operator=(Graph&) = delete;
@@ -27,13 +29,18 @@ public:
 
 	std::list<Node> GetAdjList(Node u)
 	{
-		return m_adjList[u.getId()];
+		return m_adjList[nodeId(u)];
+	}
+
+	size_t nodeId(const Node& node)
+	{
+		return node.first * c_maxSecond + node.second;
 	}	
 
 	void AddEdge(Node u, Node v)
 	{
-		m_adjList[u.getId()].push_back(v);
-		// sort lexicographically (see: Node operator < )
-		m_adjList[u.getId()].sort(); 
+		m_adjList[nodeId(u)].push_back(v);
+		// sort lexicographically (with pair comparison)
+		m_adjList[nodeId(u)].sort();
 	}
 };
