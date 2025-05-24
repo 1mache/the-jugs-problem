@@ -31,7 +31,10 @@ public:
 	Graph(Graph&) = delete;
 	Graph& operator=(Graph&) = delete;
 
-	void MakeEmptyGraph(size_t n);
+	void Graph::MakeEmptyGraph(size_t n)
+	{
+		m_adjList.resize(n);
+	}
 
 	NeighborList GetAdjList(Node u) { return m_adjList[nodeId(u)]; }
 
@@ -58,8 +61,8 @@ private:
 	// ======= BFS related =========
 	const Node m_bfsStartNode = { 0, 0 };
 	// parents hold the previous node and the action taken to reach the current node
-	std::vector<std::pair<Node, Action>> m_parents;
-	std::vector<size_t>					 m_distances;
+	std::vector<std::pair<Node*, Action>> m_parents;
+	std::vector<size_t>					  m_distances;
 
 private:
 	// convert a node to a unique index in the adjacency list

@@ -49,6 +49,12 @@ void JugsManager::solveWithGraph()
 	graph.BFS();
 	std::list<Graph::Action> path = graph.GetActionPath({ W, 0 });
 
+	if( path.empty())
+	{
+		std::cout << "No solution." << std::endl;
+		return;
+	}
+
 	std::cout << "Number of operations: " << path.size() << std::endl;
 	std::cout << "Operations:\n";
 

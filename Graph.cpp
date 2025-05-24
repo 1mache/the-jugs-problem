@@ -1,21 +1,5 @@
 #include "Graph.h"
 
-void Graph::MakeEmptyGraph(size_t n)
-{
-	m_adjList.resize(n);
-	
-	// resize does that for us
-
-	//for (size_t i = 0; i < m_L+1; ++i) {
-	//	for (size_t j = 0; j < m_S+1; ++j)
-	//	{
-	//		auto id = nodeId({ i,j });
-	//		// add node (pair) into the adjacency list with empty neighbors list
-	//		m_adjList[nodeId({ i, j })] = NeighborList();
-	//	}
-	//}
-}
-
 void Graph::BFS()
 {
 	std::queue<Node> q;
@@ -24,7 +8,7 @@ void Graph::BFS()
 	m_distances.resize(m_NodesCount, INF);
 	m_distances[nodeId(m_bfsStartNode)] = 0;
 	// for now, should be null or similar
-	m_parents.resize(m_NodesCount, { Node(), Action::None });
+	m_parents.resize(m_NodesCount, { nullptr, Action::None });
 
 	while (!q.empty())
 	{
@@ -40,7 +24,7 @@ void Graph::BFS()
 				// update distance 
 				m_distances[uId] = m_distances[nodeId(v)] + 1;
 				// update parent and action
-				m_parents[uId] = { v, getAction(v, u) };
+				m_parents[uId] = { &v, getAction(v, u) };
 				q.push(u);
 			}
 		}
@@ -59,7 +43,9 @@ std::list<Graph::Action> Graph::GetActionPath(Node target)
 	size_t currId  = nodeId(target);
 	size_t startId = nodeId(m_bfsStartNode);
 
-	// TODO: Null parent check for target
+	// if the target node is unreachable from the start node
+	if(m_parents[currId].first == nullptr)
+		return actionPath; // return empty path
 
 	while (currId != nodeId(m_bfsStartNode))
 	{
@@ -71,7 +57,7 @@ std::list<Graph::Action> Graph::GetActionPath(Node target)
 		// push the action to front because we are going backwards
 		actionPath.push_front(m_parents[currId].second);
 		// update current id to its parent id
-		currId = nodeId(m_parents[currId].first);
+		currId = nodeId(*(m_parents[currId].first));
 	}
 }
 
