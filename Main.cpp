@@ -37,8 +37,20 @@ int main()
     }
     else
     {
-        // Enter method 2 code here:
+        if (showTime)
+        {
+            auto start = std::chrono::high_resolution_clock::now();
+            manager.solveWithDynamicBFS();
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "Function took " << duration.count() << " microseconds." << std::endl;
+        }
+        else
+        {
+            manager.solveWithDynamicBFS();
+        }
     }
+
 
     return 0;
 }
