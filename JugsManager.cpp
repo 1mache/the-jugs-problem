@@ -7,7 +7,7 @@ void JugsManager::solveWithGraph()
 	//graph.MakeEmptyGraph((L+1)*(S+1));
 
 	graph.BFS();
-	std::list<Graph::Action> path = graph.GetPath({ W, 0 });
+	std::list<Graph::Action> path = graph.GetActionPath({ W, 0 });
 
 	for(auto action : path)
 	{
