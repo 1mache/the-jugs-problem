@@ -23,6 +23,7 @@ int main()
 
     if (method == 1)
     {
+        // TODO: check only zero or 1
         if (showTime)
         {
             auto start = std::chrono::high_resolution_clock::now();

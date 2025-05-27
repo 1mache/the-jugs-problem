@@ -36,14 +36,14 @@ public:
 		m_adjList.resize(n);
 	}
 
-	NeighborList GetAdjList(Node u) { return m_adjList[nodeId(u)]; }
+	NeighborList GetAdjList(Node u) { return m_adjList[nodeToId(u)]; }
 
 	void AddEdge(Node u, Node v)
 	{
 		// push v into the adjacency list of u
-		m_adjList[nodeId(u)].push_back(v);
+		m_adjList[nodeToId(u)].push_back(v);
 		// sort lexicographically (with pair comparison)
-		m_adjList[nodeId(u)].sort();
+		m_adjList[nodeToId(u)].sort();
 	}
 
 	void BFS();
@@ -52,6 +52,7 @@ public:
 private:
 	// definintion of infinity for bfs
 	static constexpr size_t INF = SIZE_MAX;
+	static constexpr size_t NULL_NODE = SIZE_MAX;
 
 	const size_t m_L, m_S;
 	const size_t m_NodesCount;
@@ -60,15 +61,21 @@ private:
 
 	// ======= BFS related =========
 	const Node m_bfsStartNode = { 0, 0 };
-	// parents hold the previous node and the action taken to reach the current node
-	std::vector<std::pair<Node*, Action>> m_parents;
+	// parents hold the previous node id and the action taken to reach the current node
+	std::vector<std::pair<size_t, Action>> m_parents;
 	std::vector<size_t>					  m_distances;
 
 private:
 	// convert a node to a unique index in the adjacency list
-	size_t nodeId(Node u) const
+	size_t nodeToId(Node u) const
 	{
 		return u.first * (m_S + 1) + u.second;
+	}
+
+	// TODO: remove later if not used
+	Node idToNode(size_t id) const 
+	{
+		return Node{ id / (m_S + 1), id % (m_S + 1) };
 	}
 
 	// determine the action taken to go from one node to another

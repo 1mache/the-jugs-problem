@@ -6,9 +6,9 @@ void Graph::BFS()
 	q.push(m_bfsStartNode);
 	// initialize distances and parents
 	m_distances.resize(m_NodesCount, INF);
-	m_distances[nodeId(m_bfsStartNode)] = 0;
+	m_distances[nodeToId(m_bfsStartNode)] = 0;
 	// for now, should be null or similar
-	m_parents.resize(m_NodesCount, { nullptr, Action::None });
+	m_parents.resize(m_NodesCount, { NULL_NODE, Action::None });
 
 	while (!q.empty())
 	{
@@ -17,14 +17,14 @@ void Graph::BFS()
 
 		for (const Node& u : GetAdjList(v))
 		{
-			size_t uId = nodeId(u);
+			size_t uId = nodeToId(u);
 
 			if (m_distances[uId] == INF) // not visited
 			{
 				// update distance 
-				m_distances[uId] = m_distances[nodeId(v)] + 1;
+				m_distances[uId] = m_distances[nodeToId(v)] + 1;
 				// update parent and action
-				m_parents[uId] = { &v, getAction(v, u) };
+				m_parents[uId] = { nodeToId(v), getAction(v, u)};
 				q.push(u);
 			}
 		}
@@ -40,14 +40,14 @@ std::list<Graph::Action> Graph::GetActionPath(Node target)
 
 	std::list<Action> actionPath;
 
-	size_t currId  = nodeId(target);
-	size_t startId = nodeId(m_bfsStartNode);
+	size_t currId  = nodeToId(target);
+	size_t startId = nodeToId(m_bfsStartNode);
 
 	// if the target node is unreachable from the start node
-	if(m_parents[currId].first == nullptr)
+	if(m_parents[currId].first == NULL_NODE)
 		return actionPath; // return empty path
 
-	while (currId != nodeId(m_bfsStartNode))
+	while (currId != startId)
 	{
 		auto action = m_parents[currId].second;
 		// should never happen
@@ -57,8 +57,10 @@ std::list<Graph::Action> Graph::GetActionPath(Node target)
 		// push the action to front because we are going backwards
 		actionPath.push_front(m_parents[currId].second);
 		// update current id to its parent id
-		currId = nodeId(*(m_parents[currId].first));
+		currId = m_parents[currId].first;
 	}
+
+	return actionPath;
 }
 
 Graph::Action Graph::getAction(const Node& from, const Node& to)
