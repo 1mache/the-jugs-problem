@@ -1,86 +1,134 @@
 #include "JugsManager.h"
 
-void JugsManager::solveWithGraph()
+void JugsManager::SolveWithGraph()
 {
-	Graph graph(L, S);
-	// TODO: is this ok?
-	//graph.MakeEmptyGraph((L+1)*(S+1));
+	Graph graph(m_L, m_S);
 
 	// Add all possible state transitions to the graph
-	for (size_t i = 0; i < L+1; ++i) {
-		for (size_t j = 0; j < S+1; ++j)
+	for (size_t i = 0; i < m_L + 1; ++i) {
+		for (size_t j = 0; j < m_S + 1; ++j)
 		{
-			// Fill large jug:
-			if (i < L) // if the large jug is not full
-				graph.AddEdge({ i, j }, { L, j });
+			Node currentState = { i, j };
 
-			// Fill small jug:
-			if(j < S) // if the small jug is not full
-				graph.AddEdge({ i, j }, { i, S });
-
-			// Empty large jug:
-			if (i > 0) // if the large jug is not empty
-				graph.AddEdge({ i, j }, { 0, j });
-
-			// Empty small jug
-			if (j > 0) // if the small jug is not empty
-				graph.AddEdge({ i, j }, { i, 0 });
-
-			// From large jug to small jug:
-			
+			// Precalculate more complex state transitions:
 			// min between how much large has and how much small can take
-			size_t transferAmount = std::min(i, S - j);
-			std::pair<size_t, size_t> newState = { i - transferAmount, j + transferAmount};
-			if (Graph::Node{i,j} != newState)
-				graph.AddEdge({ i, j }, newState);
+			size_t transferAmount = std::min(i, m_S - j);
+			Node largeToSmall = { i - transferAmount, j + transferAmount };
 
-			// From small jug to large jug:
-			
 			// min between how much small has and how much large can take
-			transferAmount = std::min(j, L - i);
-			newState = { i + transferAmount, j - transferAmount };
-			if (Graph::Node{ i,j } != newState)
-				graph.AddEdge({ i, j }, newState);
+			transferAmount = std::min(j, m_L - i);
+			Node smallToLarge = { i + transferAmount, j - transferAmount };
+
+			std::vector<Node> possibleNeighbors
+			{
+				Node(m_L, j),    // Fill large jug
+				Node(i, m_S),    // Fill small jug
+				Node(0, j),      // Empty large jug
+				Node(i, 0),      // Empty small jug
+				largeToSmall,    // From large jug to small jug
+				smallToLarge     // From small jug to large jug
+			};
+
+			for (const auto& neighbor : possibleNeighbors)
+			{
+				// we dont want edges to the same state
+				if (currentState != neighbor)
+					graph.AddEdge(currentState, neighbor);
+			}
 		}
 	}
 
-	graph.BFS();
-	std::list<Graph::Action> path = graph.GetActionPath({ W, 0 });
+	graph.BFS(m_startState);
+	std::list<Action> path = graph.GetActionPath(m_goalState);
+	printSolution(path);
+}
 
-	if(path.empty())
+void JugsManager::SolveWithHashTable()
+{
+
+}
+
+std::list<JugsManager::Node> JugsManager::CalculateAdjList(const Node& u)
+{
+	std::list<Node> adjList;
+
+	// check all possible state transitions from the current Node u
+	for (size_t i = 0; i < m_L + 1; ++i) {
+		for (size_t j = 0; j < m_S + 1; ++j)
+		{
+			Node currentState = { i, j };
+
+			// Precalculate more complex state transitions:
+			// min between how much large has and how much small can take
+			size_t transferAmount = std::min(i, m_S - j);
+			Node largeToSmall = { i - transferAmount, j + transferAmount };
+
+			// min between how much small has and how much large can take
+			transferAmount = std::min(j, m_L - i);
+			Node smallToLarge = { i + transferAmount, j - transferAmount };
+
+			std::vector<std::pair<Node, Action>> possibleNeighbors
+			{
+				{ Node(m_L, j),  Action::FillL    }, // Fill large jug
+				{ Node(i, m_S),  Action::FillS    }, // Fill small jug
+				{ Node(0, j),    Action::EmptyL   }, // Empty large jug
+				{ Node(i, 0),    Action::EmptyS   }, // Empty small jug
+				{ largeToSmall,  Action::PourLtoS }, // From large jug to small jug
+				{ smallToLarge,  Action::PourStoL }  // From small jug to large jug
+			};
+
+			for (const auto& neighbor : possibleNeighbors)
+			{
+				auto neighborId = nodeToId(neighbor.first);
+				if (currentState != neighbor.first && !isVisited(neighborId)) 
+				{
+					adjList.push_back(neighbor.first);
+					// store the action leading to this state
+					m_visited[neighborId] = neighbor.second; 
+				}
+			}
+		}
+	}
+
+	return adjList;
+}
+
+void JugsManager::printSolution(const std::list<Action>& actionPath) const
+{
+	if (actionPath.empty())
 	{
 		std::cout << "No solution." << std::endl;
 		return;
 	}
 
-	std::cout << "Number of operations: " << path.size() << std::endl;
+	std::cout << "Number of operations: " << actionPath.size() << std::endl;
 	std::cout << "Operations:\n";
 
 	size_t stepCount = 1;
 
-	for (auto action : path)
+	for (auto action : actionPath)
 	{
 		std::cout << stepCount << ". ";
 		stepCount++;
 
 		switch (action)
 		{
-		case Graph::Action::FillL:
+		case Action::FillL:
 			std::cout << "Fill large jug\n";
 			break;
-		case Graph::Action::FillS:
+		case Action::FillS:
 			std::cout << "Fill small jug\n";
 			break;
-		case Graph::Action::EmptyL:
+		case Action::EmptyL:
 			std::cout << "Empty large jug\n";
 			break;
-		case Graph::Action::EmptyS:
+		case Action::EmptyS:
 			std::cout << "Empty small jug\n";
 			break;
-		case Graph::Action::PourLtoS:
+		case Action::PourLtoS:
 			std::cout << "Transfer from large jug to small jug\n";
 			break;
-		case Graph::Action::PourStoL:
+		case Action::PourStoL:
 			std::cout << "Transfer from small jug to large jug\n";
 			break;
 		}

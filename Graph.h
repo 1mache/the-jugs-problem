@@ -5,21 +5,13 @@
 #include <list>
 #include <queue>
 
+#include "Config.h"
+#include "Action.h"
+
 class Graph
 {
 public:
-	enum class Action 
-	{
-		FillL,
-		FillS,
-		EmptyL,
-		EmptyS,
-		PourLtoS,
-		PourStoL, 
-		None
-	};
-
-	using Node = std::pair<size_t, size_t>;
+	using Node = Config::NodeType;
 	using NeighborList = std::list<Node>;
 	using AdjList = std::vector<NeighborList>;
 
@@ -46,28 +38,24 @@ public:
 		m_adjList[nodeToId(u)].sort();
 	}
 
-	void BFS();
-	std::list<Action> GetActionPath(Node target);
+	void BFS(const Node& startNode);
+	std::list<Action> GetActionPath(const Node& target);
 
 private:
-	// definintion of infinity for bfs
-	static constexpr size_t INF = SIZE_MAX;
-	static constexpr size_t NULL_NODE = SIZE_MAX;
-
 	const size_t m_L, m_S;
 	const size_t m_NodesCount;
 
 	AdjList m_adjList;
 
 	// ======= BFS related =========
-	const Node m_bfsStartNode = { 0, 0 };
+	size_t m_bfsStartNodeId = Config::NULL_ID; // which node is the start node for BFS
 	// parents hold the previous node id and the action taken to reach the current node
 	std::vector<std::pair<size_t, Action>> m_parents;
-	std::vector<size_t>					  m_distances;
+	std::vector<size_t>					   m_distances;
 
 private:
 	// convert a node to a unique index in the adjacency list
-	size_t nodeToId(Node u) const
+	size_t nodeToId(const Node& u) const
 	{
 		return u.first * (m_S + 1) + u.second;
 	}
@@ -79,5 +67,5 @@ private:
 	}
 
 	// determine the action taken to go from one node to another
-	Graph::Action getAction(const Node& from, const Node& to);
+	Action getAction(const Node& from, const Node& to);
 };

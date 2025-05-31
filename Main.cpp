@@ -27,14 +27,14 @@ int main()
         if (showTime)
         {
             auto start = std::chrono::high_resolution_clock::now();
-            manager.solveWithGraph();
+            manager.SolveWithGraph();
             auto end = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             std::cout << "Function took " << duration.count() << " microseconds." << std::endl;
         }
         else
         {
-            manager.solveWithGraph();
+            manager.SolveWithGraph();
         }
     }
     else

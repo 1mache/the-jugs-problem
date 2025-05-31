@@ -1,14 +1,17 @@
 #include "Graph.h"
 
-void Graph::BFS()
+void Graph::BFS(const Node& startNode)
 {
+	// initialize the bfsStartNodeId
+	m_bfsStartNodeId = nodeToId(startNode);
+
 	std::queue<Node> q;
-	q.push(m_bfsStartNode);
+	q.push(startNode);
 	// initialize distances and parents
-	m_distances.resize(m_NodesCount, INF);
-	m_distances[nodeToId(m_bfsStartNode)] = 0;
+	m_distances.resize(m_NodesCount, Config::INF);
+	m_distances[nodeToId(startNode)] = 0;
 	// for now, should be null or similar
-	m_parents.resize(m_NodesCount, { NULL_NODE, Action::None });
+	m_parents.resize(m_NodesCount, { Config::NULL_ID, Action::None });
 
 	while (!q.empty())
 	{
@@ -19,7 +22,7 @@ void Graph::BFS()
 		{
 			size_t uId = nodeToId(u);
 
-			if (m_distances[uId] == INF) // not visited
+			if (m_distances[uId] == Config::INF) // not visited
 			{
 				// update distance 
 				m_distances[uId] = m_distances[nodeToId(v)] + 1;
@@ -31,20 +34,20 @@ void Graph::BFS()
 	}
 }
 
-std::list<Graph::Action> Graph::GetActionPath(Node target)
+std::list<Action> Graph::GetActionPath(const Node& target)
 {
 	// BFS should be called before this, this relies on
 	// the parents list
 	if (m_parents.empty())
-		throw std::logic_error("Shortest path tree is empty.");
+		throw std::logic_error("Shortest path tree is empty. BFS fuction wasn't called");
 
 	std::list<Action> actionPath;
 
 	size_t currId  = nodeToId(target);
-	size_t startId = nodeToId(m_bfsStartNode);
+	size_t startId = m_bfsStartNodeId;
 
 	// if the target node is unreachable from the start node
-	if(m_parents[currId].first == NULL_NODE)
+	if(m_parents[currId].first == Config::NULL_ID)
 		return actionPath; // return empty path
 
 	while (currId != startId)
@@ -63,7 +66,7 @@ std::list<Graph::Action> Graph::GetActionPath(Node target)
 	return actionPath;
 }
 
-Graph::Action Graph::getAction(const Node& from, const Node& to)
+Action Graph::getAction(const Node& from, const Node& to)
 {
 	if (to.first > from.first && to.second == from.second) return Action::FillL;
 	if (to.second > from.second && to.first == from.first) return Action::FillS;
