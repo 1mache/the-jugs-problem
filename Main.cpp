@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <chrono>
+
 #include "JugsManager.h"
 
 bool isValidInput(size_t L, size_t S, size_t W, size_t method)
@@ -42,17 +43,16 @@ int main()
         if (showTime)
         {
             auto start = std::chrono::high_resolution_clock::now();
-            //manager.solveWithDynamicBFS();
+            manager.SolveWithHashTable();
             auto end = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             std::cout << "Function took " << duration.count() << " microseconds." << std::endl;
         }
         else
         {
-            //manager.solveWithDynamicBFS();
+            manager.SolveWithHashTable();
         }
     }
-
 
     return 0;
 }

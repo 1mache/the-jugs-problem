@@ -36,12 +36,12 @@ void Graph::BFS(const Node& startNode)
 
 std::list<Action> Graph::GetActionPath(const Node& target)
 {
+
+	std::list<Action> actionPath;
 	// BFS should be called before this, this relies on
 	// the parents list
 	if (m_parents.empty())
-		throw std::logic_error("Shortest path tree is empty. BFS fuction wasn't called");
-
-	std::list<Action> actionPath;
+		return actionPath;
 
 	size_t currId  = nodeToId(target);
 	size_t startId = m_bfsStartNodeId;
@@ -58,7 +58,7 @@ std::list<Action> Graph::GetActionPath(const Node& target)
 			throw std::logic_error("\"None\" action was found in shortest path tree.");
 
 		// push the action to front because we are going backwards
-		actionPath.push_front(m_parents[currId].second);
+		actionPath.push_front(action);
 		// update current id to its parent id
 		currId = m_parents[currId].first;
 	}

@@ -6,6 +6,8 @@
 class JugsManager
 {
 	using Node = Config::NodeType;
+	using Transition = std::pair<Node, Action>;
+
 	const size_t m_L, m_S, m_W;
 	const Node m_startState = { 0, 0 }; // initial state of the jugs
 	const Node m_goalState =  { m_W, 0 }; // goal state of the jugs
@@ -22,8 +24,10 @@ public:
 	// Hash table solution (implementation 2)
 	void SolveWithHashTable();
 	// calculate unvisited neighbors of a node
-	std::list<Node> CalculateAdjList(const Node& u);
+	std::list<Transition> CalculateAdjList(const Node& u); 
 private:
+	std::list<Action> calcActionPath(const std::unordered_map<size_t, size_t> parentMap) const;
+
 	// helper functio to print the actions taken to reach solutions
 	void printSolution(const std::list<Action>& actionPath) const;
 	
