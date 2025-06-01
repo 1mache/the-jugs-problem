@@ -122,10 +122,16 @@ std::list<Action> JugsManager::calcActionPath(const std::unordered_map<size_t, s
 	std::list<Action> actionPath;
 	// needs to recieve valid parentMap
 	if (parentMap.empty())
+	{
+		std::cout << "Parent map empty. Returning empty list." << std::endl;
 		return actionPath; // return empty list
+	}
 
 	size_t currId = nodeToId(m_goalState);
 	size_t startId = nodeToId(m_startState);
+
+	if (parentMap.find(currId) == parentMap.end())
+		return actionPath; // return empty path
 
 	// if the target node is unreachable from the start node
 	if (parentMap.at(currId) == Config::NULL_ID)

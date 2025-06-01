@@ -23,7 +23,7 @@ public:
 	Graph(Graph&) = delete;
 	Graph& operator=(Graph&) = delete;
 
-	void Graph::MakeEmptyGraph(size_t n)
+	void MakeEmptyGraph(size_t n)
 	{
 		m_adjList.resize(n);
 	}

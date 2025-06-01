@@ -1,5 +1,7 @@
 #pragma once
 #include <utility>
+#include <cstddef>
+#include <cstdint>
 
 class Config
 {

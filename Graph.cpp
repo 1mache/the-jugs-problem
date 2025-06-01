@@ -36,17 +36,21 @@ void Graph::BFS(const Node& startNode)
 
 std::list<Action> Graph::GetActionPath(const Node& target)
 {
-
 	std::list<Action> actionPath;
 	// BFS should be called before this, this relies on
 	// the parents list
 	if (m_parents.empty())
+	{
+		std::cout << "Parent vector empty. Graph::BFS should be called before"
+				  << " Graph::GetActionPath. Returning empty list." << std::endl;
 		return actionPath;
+	}
 
 	size_t currId  = nodeToId(target);
 	size_t startId = m_bfsStartNodeId;
 
 	// if the target node is unreachable from the start node
+	// meaning no solution
 	if(m_parents[currId].first == Config::NULL_ID)
 		return actionPath; // return empty path
 

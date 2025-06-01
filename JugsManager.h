@@ -25,6 +25,7 @@ public:
 	void SolveWithHashTable();
 	// calculate unvisited neighbors of a node
 	std::list<Transition> CalculateAdjList(const Node& u); 
+
 private:
 	std::list<Action> calcActionPath(const std::unordered_map<size_t, size_t> parentMap) const;
 
